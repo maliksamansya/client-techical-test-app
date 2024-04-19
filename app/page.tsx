@@ -152,14 +152,14 @@ export default function Home() {
     // console.log(info?.source, value);
     setName(value);
   };
-  console.log(name, "<<<< name");
+  // console.log(name, "<<<< name");
   const fetchData = async () => {
     setLoading(true);
     try {
       const response = await fetch(
         `http://localhost:3001/manipulate-api?${qs.stringify(
           getRandomuserParams(tableParams)
-        )}&name=${name}`
+        )}`
       );
       const data = await response.json();
       setData(data);
@@ -180,9 +180,22 @@ export default function Home() {
     }
   };
 
+  function filterByName() {
+    const searchTerm = name.toLowerCase(); // Ubah kata kunci pencarian menjadi huruf kecil agar case insensitive
+    const filterdData = data?.filter((item: { name: string }) =>
+      item.name.toLowerCase().includes(searchTerm)
+    );
+    // console.log(filterdData, "<<<<<<< filtered data");
+    // console.log(data, "<<<<<<< data awal");
+    setData(filterdData);
+  }
+
   useEffect(() => {
     fetchData();
-  }, [JSON.stringify(tableParams), name]);
+  }, [JSON.stringify(tableParams)]);
+  useEffect(() => {
+    filterByName();
+  }, [name]);
 
   const handleTableChange: TableProps["onChange"] = (
     pagination,
